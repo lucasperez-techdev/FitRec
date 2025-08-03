@@ -8,19 +8,19 @@ export const metadata: Metadata = {
 
 export default function LoginPage() {
   return (
-    <div className="bg-white dark:bg-gray-800 py-8 px-6 shadow rounded-lg sm:px-10">
+    <div className="login-form-container">
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center">
+        <h2 className="login-form-title">
           Sign in to your account
         </h2>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400 text-center">
+        <p className="login-form-description">
           Welcome back! Please enter your details.
         </p>
       </div>
 
       <form className="space-y-6">
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="email" className="login-form-label">
             Email address
           </label>
           <input
@@ -29,13 +29,13 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            className="login-form-input"
             placeholder="Enter your email"
           />
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="password" className="login-form-label">
             Password
           </label>
           <input
@@ -44,7 +44,7 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
+            className="login-form-input"
             placeholder="Enter your password"
           />
         </div>

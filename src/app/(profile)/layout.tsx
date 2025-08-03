@@ -1,10 +1,6 @@
 'use client'
-
-import type { Metadata } from "next";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-
-
 export default function ProfileLayout({
   children,
 }: {

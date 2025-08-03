@@ -1,4 +1,6 @@
 @import "tailwindcss";
+@tailwind components;
+@tailwind utilities;
 
 :root {
   --background: #ffffff;
@@ -24,3 +26,50 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+/* Auth Layout Styling*/
+.auth-layout-container {
+  @apply min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8;
+}
+
+.auth-layout-content {
+  @apply max-w-md w-full space-y-8;
+}
+
+.auth-layout-title {
+  @apply text-3xl font-bold text-gray-900 dark:text-white;
+}
+
+.auth-layout-description {
+  @apply mt-2 text-sm text-gray-600 dark:text-gray-400;
+}
+
+/* Login Page Styling*/
+.login-form-container {
+  @apply bg-white dark:bg-gray-800 py-8 px-6 shadow rounded-lg sm:px-10;
+}
+
+.login-form-title {
+  @apply text-2xl font-bold text-gray-900 dark:text-white text-center;
+}
+
+.login-form-description {
+  @apply mt-2 text-sm text-gray-600 dark:text-gray-400 text-center;
+}
+
+.login-form-input {
+  @apply mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white;
+}
+
+.login-form-label {
+  @apply block text-sm font-medium text-gray-700 dark:text-gray-300
+}
+
+
+
+
+
+
+
+

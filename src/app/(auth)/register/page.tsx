@@ -15,8 +15,12 @@ export default function RegisterPage() {
         </h2>
       </div>
 
+      {/* Beginning of Form */}
       <form className="space-y-6">
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+
+
+          {/* First name */}
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               First name
@@ -32,6 +36,7 @@ export default function RegisterPage() {
             />
           </div>
 
+          {/* Last name */}
           <div>
             <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Last name
@@ -48,6 +53,7 @@ export default function RegisterPage() {
           </div>
         </div>
 
+        {/* Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Email address
@@ -63,6 +69,7 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Password */}
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Password
@@ -78,6 +85,7 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Confirm password */}
         <div>
           <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
             Confirm password
@@ -93,6 +101,7 @@ export default function RegisterPage() {
           />
         </div>
 
+        {/* Submit button */}
         <div>
           <button
             type="submit"
@@ -102,6 +111,7 @@ export default function RegisterPage() {
           </button>
         </div>
 
+        {/* Already have an account? */}
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
             Already have an account?{" "}
