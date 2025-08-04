@@ -1,12 +1,35 @@
+'use client';
+
 import type { Metadata } from "next";
 import Link from "next/link";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
-export const metadata: Metadata = {
-  title: "Sign In - FitRec",
-  description: "Sign in to your FitRec account",
-};
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const { signIn } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+
+    try {
+      await signIn(email, password);
+      router.push("/dashboard");
+    } catch (error: any) {
+      setError(error.message || "Failed to sign in");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="login-form-container">
       <div className="mb-8">
@@ -18,7 +41,13 @@ export default function LoginPage() {
         </p>
       </div>
 
-      <form className="space-y-6">
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label htmlFor="email" className="login-form-label">
             Email address
@@ -29,8 +58,11 @@ export default function LoginPage() {
             type="email"
             autoComplete="email"
             required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="login-form-input"
             placeholder="Enter your email"
+            disabled={loading}
           />
         </div>
 
@@ -44,17 +76,21 @@ export default function LoginPage() {
             type="password"
             autoComplete="current-password"
             required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="login-form-input"
             placeholder="Enter your password"
+            disabled={loading}
           />
         </div>
 
         <div>
           <button
             type="submit"
-            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            disabled={loading}
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Sign in
+            {loading ? "Signing in..." : "Sign in"}
           </button>
         </div>
 
