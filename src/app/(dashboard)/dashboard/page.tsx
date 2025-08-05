@@ -1,4 +1,7 @@
 'use client';
+import type { Metadata } from "next";
+import WeatherCard from "./components/WeatherCard";
+import ChatCard from "./components/ChatCard";
 
 import type { Metadata } from "next";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -37,6 +40,12 @@ export default function DashboardPage() {
           </div>
         </div>
       </div>
-    </ProtectedRoute>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <WeatherCard />
+        <ChatCard />
+      </div>
+    </div>
+        </ProtectedRoute>
   );
 } 
