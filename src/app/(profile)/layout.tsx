@@ -1,5 +1,7 @@
 'use client'
 import Link from "next/link";
+
+import { useAuth } from '@/contexts/AuthContext';
 import { usePathname } from "next/navigation";
 export default function ProfileLayout({
   children,
@@ -7,7 +9,7 @@ export default function ProfileLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-
+  const { userProfile, user } = useAuth();
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -26,18 +28,18 @@ export default function ProfileLayout({
             <div className="flex items-center space-x-6">
               <div className="flex-shrink-0">
                 <div className="h-20 w-20 rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center">
-                  <span className="text-2xl font-bold text-gray-700 dark:text-gray-300">JD</span>
+                  <span className="text-2xl font-bold text-gray-700 dark:text-gray-300">{userProfile?.firstName?.charAt(0)} {userProfile?.lastName?.charAt(0)}</span>
                 </div>
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  John Doe
+                  {userProfile?.firstName} {userProfile?.lastName}
                 </h2>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  john.doe@example.com
+                  {userProfile?.email}
                 </p>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
-                  Member since August 2025
+                  Member since {userProfile?.createdAt?.toDate().toLocaleDateString()}
                 </p>
               </div>
               <div className="flex-shrink-0">
