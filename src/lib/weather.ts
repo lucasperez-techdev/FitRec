@@ -8,4 +8,4 @@ export async function getWeather(lat: number, lon: number) {
   
   const response = await axios.get(url);
   return response.data;
-}
+} 

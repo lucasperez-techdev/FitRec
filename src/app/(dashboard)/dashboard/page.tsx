@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import WeatherCard from "./components/WeatherCard";
+import ChatCard from "./components/ChatCard";
 
 export const metadata: Metadata = {
   title: "Dashboard - FitRec",
@@ -15,6 +17,11 @@ export default function DashboardPage() {
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
           Welcome back! Here's an overview of your fitness journey.
         </p>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <WeatherCard />
+        <ChatCard />
       </div>
     </div>
   );
