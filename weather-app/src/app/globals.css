@@ -27,3 +27,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+
+@layer components {
+  .main-container {
+    @apply flex flex-col items-center justify-center min-h-screen bg-blue-100;
+  }
+
+  .title-text {
+    @apply text-4xl font-bold mb-6;
+  }
+
+  .weather-card {
+    @apply bg-white shadow-lg rounded-xl p-6 text-center mt-6;
+  }
+
+  .weather-text {
+    @apply text-2xl;
+  }
+
+  .weather-subtext {
+    @apply text-xl mt-2;
+  }
+
+  .loading-text {
+    @apply text-center text-xl mt-20;
+  }
+}
