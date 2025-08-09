@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getAI, getGenerativeModel } from 'firebase/ai';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -19,5 +20,11 @@ export const auth = getAuth(app);
 
 // Initialize Firestore
 export const db = getFirestore(app);
+
+// Initialize Firebase AI
+const ai = getAI(app);
+
+// Create a GenerativeModel instance
+export const model = getGenerativeModel(ai, { model: "gemini-1.5-flash" });
 
 export default app; 

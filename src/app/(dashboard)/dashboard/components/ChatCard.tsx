@@ -1,10 +1,25 @@
 'use client';
 import { useState } from 'react';
+import { useWeather } from '@/contexts/WeatherContext';
+
+interface WeatherData {
+  temperatureApparent: number;
+}
 
 export default function ChatCard() {
   const [message, setMessage] = useState('');
   const [chat, setChat] = useState<{ role: string; content: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { weather } = useWeather();
+
+  const getOutfitSuggestion = (weatherData: WeatherData) => {
+    const { temperatureApparent } = weatherData;
+
+    if (temperatureApparent < 0) return "🧥 Heavy coat, gloves, and hat!";
+    if (temperatureApparent < 10) return "🧥 Jacket or hoodie.";
+    if (temperatureApparent < 20) return "👕 Long sleeves or light jacket.";
+    return "😎 T-shirt and shorts!";
+  };
 
   const sendMessage = async () => {
     if (!message.trim() || isLoading) return;
@@ -15,11 +30,21 @@ export default function ChatCard() {
     setChat((prev) => [...prev, { role: 'user', content: message }]);
 
     try {
-      // Send message to our API
+      // Prepare weather context for AI
+      let weatherContext = '';
+      if (weather) {
+        const outfitSuggestion = getOutfitSuggestion(weather);
+        weatherContext = `Current weather context: Temperature ${weather.temperature}°C, feels like ${weather.temperatureApparent}°C, wind speed ${weather.windSpeed} km/h. Location: ${weather.location.latitude}, ${weather.location.longitude}. Initial outfit suggestion: ${outfitSuggestion}. `;
+      }
+
+      // Send message to our API with weather context
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ 
+          message,
+          weatherContext 
+        }),
       });
 
       const data = await res.json();
@@ -27,7 +52,7 @@ export default function ChatCard() {
       // Add AI reply to chat
       setChat((prev) => [...prev, { role: 'assistant', content: data.reply }]);
       setMessage('');
-    } catch (error) {
+    } catch {
       setChat((prev) => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
       setIsLoading(false);

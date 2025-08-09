@@ -1,12 +1,12 @@
 "use client";
-import { useEffect, useState } from "react";
-import { getWeather } from "../../../../lib/weather"; 
+import { useWeather } from "@/contexts/WeatherContext";
 
-function getOutfitSuggestion(values: any) {
-  const { temperatureApparent, precipitationType } = values;
+interface WeatherValues {
+  temperatureApparent: number;
+}
 
-  if (precipitationType === 1) return "🌧 Bring an umbrella or rain jacket!";
-  if (precipitationType === 2) return "❄️ Wear boots and a warm coat!";
+function getOutfitSuggestion(values: WeatherValues) {
+  const { temperatureApparent } = values;
 
   if (temperatureApparent < 0) return "🧥 Heavy coat, gloves, and hat!";
   if (temperatureApparent < 10) return "🧥 Jacket or hoodie.";
@@ -15,37 +15,7 @@ function getOutfitSuggestion(values: any) {
 }
 
 export default function WeatherCard() {
-  const [weather, setWeather] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    // Try to get the user's location
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-
-          getWeather(latitude, longitude)
-            .then((data) => {
-              setWeather(data);
-              setLoading(false);
-            })
-            .catch(() => {
-              setError("Failed to fetch weather data.");
-              setLoading(false);
-            });
-        },
-        () => {
-          setError("Location access denied. Please enable location services.");
-          setLoading(false);
-        }
-      );
-    } else {
-      setError("Geolocation is not supported by your browser.");
-      setLoading(false);
-    }
-  }, []);
+  const { weather, loading, error } = useWeather();
 
   if (loading) return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
@@ -64,8 +34,6 @@ export default function WeatherCard() {
 
   if (!weather) return null;
 
-  const values = weather.data.values;
-
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
@@ -74,25 +42,22 @@ export default function WeatherCard() {
       
       <div className="space-y-2 text-sm">
         <p className="text-gray-600 dark:text-gray-400">
-          <span className="font-medium">Temp:</span> {values.temperature}°C
+          <span className="font-medium">Temp:</span> {weather.temperature}°C
         </p>
         <p className="text-gray-600 dark:text-gray-400">
-          <span className="font-medium">Feels Like:</span> {values.temperatureApparent}°C
+          <span className="font-medium">Feels Like:</span> {weather.temperatureApparent}°C
         </p>
         <p className="text-gray-600 dark:text-gray-400">
-          <span className="font-medium">Wind:</span> {values.windSpeed} km/h
+          <span className="font-medium">Wind:</span> {weather.windSpeed} km/h
         </p>
-        <p className="text-gray-600 dark:text-gray-400">
-          <span className="font-medium">Precipitation:</span> {
-            values.precipitationType === 0 ? "None" : 
-            values.precipitationType === 1 ? "Rain" : "Snow"
-          }
+        <p className="text-gray-500 dark:text-gray-400 text-xs">
+          Last updated: {weather.lastUpdated.toLocaleTimeString()}
         </p>
       </div>
 
       <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
         <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-          {getOutfitSuggestion(values)}
+          {getOutfitSuggestion(weather)}
         </p>
       </div>
     </div>
