@@ -70,6 +70,20 @@ body {
 
 
 
+@layer components {
+  .profile-container { @apply min-h-screen bg-gray-50 dark:bg-gray-900 p-6 flex justify-center; }
+  .profile-title { @apply text-3xl font-bold mb-4 text-gray-900 dark:text-white; }
+  .profile-card { @apply w-full max-w-xl bg-white dark:bg-gray-800 rounded-xl shadow p-6; }
+  .label { @apply block text-sm font-medium text-gray-700 dark:text-gray-300; }
+  .input { @apply mt-1 w-full border border-gray-300 dark:border-gray-600 rounded-md p-2 dark:bg-gray-700 dark:text-white; }
 
+  .chips { @apply mt-2 flex flex-wrap gap-2; }
+  .chip { @apply px-3 py-1 rounded-full border border-gray-300 text-sm bg-white dark:bg-gray-700 dark:text-white; }
+  .chip-active { @apply bg-blue-600 text-white border-blue-600; }
+
+  .btn-primary { @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700; }
+  .btn-muted { @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-md hover:bg-gray-300 dark:bg-gray-700 dark:text-white; }
+  .saved { @apply mt-3 text-green-600 font-medium; }
+}
 
 
