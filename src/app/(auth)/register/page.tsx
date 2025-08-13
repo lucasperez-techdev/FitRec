@@ -1,6 +1,5 @@
 'use client';
 
-import type { Metadata } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -57,8 +56,9 @@ export default function RegisterPage() {
         lastName: formData.lastName.trim(),
       });
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(error.message || "Failed to create account");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to create account";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }

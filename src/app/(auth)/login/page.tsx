@@ -1,6 +1,5 @@
 'use client';
 
-import type { Metadata } from "next";
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
@@ -23,8 +22,9 @@ export default function LoginPage() {
     try {
       await signIn(email, password);
       router.push("/dashboard");
-    } catch (error: any) {
-      setError(error.message || "Failed to sign in");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to sign in";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -96,7 +96,7 @@ export default function LoginPage() {
 
         <div className="text-center">
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/register"
               className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
