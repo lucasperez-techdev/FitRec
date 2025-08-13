@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
 import { useWeather } from '@/contexts/WeatherContext';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { getPreferenceSummary } from '@/lib/aiUtils';
 
 interface WeatherData {
   temperatureApparent: number;
@@ -11,6 +13,7 @@ export default function ChatCard() {
   const [chat, setChat] = useState<{ role: string; content: string }[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { weather } = useWeather();
+  const { preferences, hasPreferences } = usePreferences();
 
   const getOutfitSuggestion = (weatherData: WeatherData) => {
     const { temperatureApparent } = weatherData;
@@ -26,8 +29,9 @@ export default function ChatCard() {
 
     setIsLoading(true);
     
-    // Add user message to chat
+    // Add user message to chat and clear input immediately
     setChat((prev) => [...prev, { role: 'user', content: message }]);
+    setMessage(''); // Clear message input immediately
 
     try {
       // Prepare weather context for AI
@@ -37,13 +41,14 @@ export default function ChatCard() {
         weatherContext = `Current weather context: Temperature ${weather.temperature}°C, feels like ${weather.temperatureApparent}°C, wind speed ${weather.windSpeed} km/h. Location: ${weather.location.latitude}, ${weather.location.longitude}. Initial outfit suggestion: ${outfitSuggestion}. `;
       }
 
-      // Send message to our API with weather context
+      // Send message to our API with enhanced prompt system
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           message,
-          weatherContext 
+          weatherContext,
+          userPreferences: preferences
         }),
       });
 
@@ -51,7 +56,6 @@ export default function ChatCard() {
 
       // Add AI reply to chat
       setChat((prev) => [...prev, { role: 'assistant', content: data.reply }]);
-      setMessage('');
     } catch {
       setChat((prev) => [...prev, { role: 'assistant', content: 'Sorry, I encountered an error. Please try again.' }]);
     } finally {
@@ -66,17 +70,43 @@ export default function ChatCard() {
     }
   };
 
+  const preferenceSummary = getPreferenceSummary(preferences);
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
         💬 Outfit Assistant
       </h2>
       
+      {hasPreferences && (
+        <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            <strong>Your preferences:</strong> {preferenceSummary}
+          </p>
+        </div>
+      )}
+      
       <div className="h-64 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded p-3 space-y-2 mb-4">
         {chat.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400 text-sm text-center mt-8">
-            Ask me about outfit recommendations based on weather!
-          </p>
+          <div className="text-center mt-8 space-y-2">
+            <p className="text-gray-500 dark:text-gray-400 text-sm">
+              Ask me about outfit recommendations based on weather!
+            </p>
+            {!hasPreferences && (
+              <p className="text-xs text-gray-400 dark:text-gray-500">
+                Set your preferences in Profile Settings for personalized recommendations
+              </p>
+            )}
+            <div className="mt-4 text-xs text-gray-400 dark:text-gray-500">
+              <p className="font-medium mb-2">Try asking:</p>
+              <div className="space-y-1">
+                <p>What should I wear today?</p>
+                <p>I have a meeting, any outfit ideas?</p>
+                <p>What&apos;s good for this weather?</p>
+                <p>Can you suggest some casual outfits?</p>
+              </div>
+            </div>
+          </div>
         ) : (
           chat.map((msg, i) => (
             <div

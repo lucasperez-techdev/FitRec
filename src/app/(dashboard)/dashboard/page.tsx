@@ -2,8 +2,8 @@
 import WeatherCard from "./components/WeatherCard";
 import ChatCard from "./components/ChatCard";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import UserProfile from "@/components/UserProfile";
 import LogoutButton from "@/components/LogoutButton";
+import PreferencesSummary from "@/components/PreferencesSummary";
 import { useAuth } from "@/contexts/AuthContext";
 
 export default function DashboardPage() {
@@ -25,10 +25,18 @@ export default function DashboardPage() {
           </LogoutButton>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-          <WeatherCard />
-          <ChatCard />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <div className="">
+            <WeatherCard />
+          </div>
+          <div>
+            <PreferencesSummary />
+          </div>
+          <div className="">
+            <ChatCard />
+          </div>
         </div>
+        
       </div>
     </ProtectedRoute>
   );

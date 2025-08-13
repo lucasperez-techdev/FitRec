@@ -1,77 +1,109 @@
 "use client";
-import { useEffect, useState } from "react";
-import { loadPrefs, savePrefs, type UserPrefs } from "@/lib/prefs";
-
-const COLORS = ["black", "white", "blue", "green", "red", "beige"];
+import { usePreferences } from "@/contexts/PreferencesContext";
+import Link from "next/link";
 
 export default function ProfilePage() {
-  const [prefs, setPrefs] = useState<UserPrefs>({ style: "", colors: [], comfort: "", rainGear: true, footwear: "" });
-  const [saved, setSaved] = useState<string | null>(null);
+  const { preferences, loading } = usePreferences();
 
-  useEffect(() => { setPrefs(loadPrefs()); }, []);
-
-  const toggleColor = (c: string) =>
-    setPrefs(p => p.colors.includes(c) ? { ...p, colors: p.colors.filter(x => x !== c) } : { ...p, colors: [...p.colors, c] });
-
-  const onSave = () => { savePrefs(prefs); setSaved("Preferences saved!"); setTimeout(() => setSaved(null), 1500); };
-  const onReset = () => { const blank: UserPrefs = { style: "", colors: [], comfort: "", rainGear: true, footwear: "" }; setPrefs(blank); savePrefs(blank); };
+  if (loading) {
+    return (
+      <main className="profile-container">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <div className="text-lg">Loading your profile...</div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="profile-container">
-      <h1 className="profile-title">Your Profile</h1>
+      <div className="w-full max-w-xl">
+        <h1 className="profile-title text-center mb-8">Your Profile</h1>
 
-      <section className="profile-card">
-        <label className="label">Clothing Style</label>
-        <select className="input" value={prefs.style}
-          onChange={(e) => setPrefs({ ...prefs, style: e.target.value as UserPrefs["style"] })}>
-          <option value="">Pick one</option>
-          <option value="casual">Casual</option>
-          <option value="sporty">Sporty</option>
-          <option value="formal">Formal</option>
-          <option value="street">Street</option>
-        </select>
+        <section className="profile-card">
+          <h2 className="text-xl font-semibold mb-6">Clothing Preferences</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="label">Clothing Style</label>
+              <div className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                {preferences.style ? (
+                  <span className="text-lg font-medium capitalize text-gray-900">{preferences.style}</span>
+                ) : (
+                  <span className="text-gray-500">Not set</span>
+                )}
+              </div>
+            </div>
 
-        <label className="label mt-4">Favorite Colors</label>
-        <div className="chips">
-          {COLORS.map(c => (
-            <button key={c} type="button" onClick={() => toggleColor(c)}
-              className={`chip ${prefs.colors.includes(c) ? "chip-active" : ""}`}>
-              {c}
-            </button>
-          ))}
+            <div>
+              <label className="label">Weather Comfort</label>
+              <div className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                {preferences.comfort ? (
+                  <span className="text-lg font-medium capitalize text-gray-900">
+                    {preferences.comfort === 'cold' ? 'I run cold' : 
+                     preferences.comfort === 'hot' ? 'I run hot' : 'Neutral'}
+                  </span>
+                ) : (
+                  <span className="text-gray-500">Not set</span>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="label">Footwear Preference</label>
+              <div className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                {preferences.footwear ? (
+                  <span className="text-lg font-medium capitalize text-gray-900">{preferences.footwear}</span>
+                ) : (
+                  <span className="text-gray-500">Not set</span>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="label">Rain Gear</label>
+              <div className="mt-2 p-3 bg-white border border-gray-200 rounded-lg">
+                <span className="text-lg font-medium text-gray-900">
+                  {preferences.rainGear ? 'Yes, I\'ll wear rain gear' : 'No, I prefer not to'}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <label className="label">Favorite Colors</label>
+            <div className="mt-2">
+              {preferences.colors.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {preferences.colors.map(c => (
+                    <span key={c} className="chip chip-active">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <span className="text-gray-500">No colors selected</span>
+              )}
+            </div>
+          </div>
+        </section>
+
+        <div className="text-center mt-8 space-y-3">
+          <Link 
+            href="/profile/settings" 
+            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Edit Settings
+          </Link>
+          <br />
+          <Link 
+            href="/dashboard" 
+            className="inline-block px-6 py-3 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition-colors"
+          >
+            Back to Dashboard
+          </Link>
         </div>
-
-        <label className="label mt-4">Weather Comfort</label>
-        <select className="input" value={prefs.comfort}
-          onChange={(e) => setPrefs({ ...prefs, comfort: e.target.value as UserPrefs["comfort"] })}>
-          <option value="">Pick one</option>
-          <option value="cold">I run cold</option>
-          <option value="neutral">Neutral</option>
-          <option value="hot">I run hot</option>
-        </select>
-
-        <label className="label mt-4">Footwear Preference</label>
-        <select className="input" value={prefs.footwear}
-          onChange={(e) => setPrefs({ ...prefs, footwear: e.target.value as UserPrefs["footwear"] })}>
-          <option value="">Pick one</option>
-          <option value="sneakers">Sneakers</option>
-          <option value="boots">Boots</option>
-          <option value="dress">Dress shoes</option>
-        </select>
-
-        <label className="label mt-4 flex items-center gap-2">
-          <input type="checkbox" checked={prefs.rainGear}
-                 onChange={(e) => setPrefs({ ...prefs, rainGear: e.target.checked })}/>
-          Ill wear rain gear if needed
-        </label>
-
-        <div className="mt-4 flex gap-3">
-          <button className="btn-primary" onClick={onSave}>Save</button>
-          <button className="btn-muted" onClick={onReset}>Reset</button>
-        </div>
-
-        {saved && <p className="saved">{saved}</p>}
-      </section>
+      </div>
     </main>
   );
 }
