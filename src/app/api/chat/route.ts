@@ -1,18 +1,32 @@
 import { NextResponse } from 'next/server';
 import { model } from '@/lib/firebase';
+import { generateFollowUpPrompt } from '@/lib/aiUtils';
 
 export async function POST(req: Request) {
-  const { message, weatherContext } = await req.json();
+  const { message, weatherContext, userPreferences } = await req.json();
 
   try {
-    let prompt = `You are a helpful weather and outfit recommendation assistant. `;
+    // Use the enhanced prompt system for better AI responses
+    let prompt = generateFollowUpPrompt(message, userPreferences, null);
     
+    // Add additional weather context if available
     if (weatherContext) {
-      prompt += `${weatherContext} `;
+      prompt += `\n\nAdditional Weather Context: ${weatherContext}`;
     }
     
-    prompt += `Please provide helpful advice about outfits based on weather conditions and user preferences. User message: ${message}`;
-    
+    // Add specific instructions for response quality
+    prompt += `\n\nFINAL INSTRUCTIONS:
+- Respond as if you're a helpful fashion advisor having a conversation
+- Be specific about clothing items and layering
+- Consider the user's comfort preferences and style
+- Keep the tone friendly and practical
+- If the user asks about specific items, provide alternatives that match their preferences
+- Always factor in the current weather conditions
+- CRITICAL: Adjust clothing recommendations based on temperature sensitivity:
+  * If user runs cold: suggest warmer clothing than typical for the weather
+  * If user runs hot: suggest lighter, more breathable clothing than typical for the weather
+  * If user is neutral: use standard temperature-appropriate recommendations`;
+
     const result = await model.generateContent(prompt);
     const response = await result.response;
     const reply = response.text() || 'No response';

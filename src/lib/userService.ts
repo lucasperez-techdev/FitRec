@@ -1,6 +1,7 @@
 import { doc, setDoc, getDoc, updateDoc, Timestamp } from 'firebase/firestore';
 import { db } from './firebase';
 import { User } from 'firebase/auth';
+import { UserPrefs } from './prefs';
 
 export interface UserProfile {
   uid: string;
@@ -9,6 +10,7 @@ export interface UserProfile {
   email: string;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+  preferences?: UserPrefs;
 }
 
 export const userService = {
@@ -23,6 +25,13 @@ export const userService = {
       email: user.email || '',
       createdAt: Timestamp.now(),
       updatedAt: Timestamp.now(),
+      preferences: {
+        style: "",
+        colors: [],
+        comfort: "",
+        rainGear: true,
+        footwear: ""
+      }
     };
 
     await setDoc(userRef, userProfile);
@@ -47,5 +56,20 @@ export const userService = {
       ...updates,
       updatedAt: Timestamp.now(),
     });
+  },
+
+  // Update user preferences
+  async updateUserPreferences(uid: string, preferences: UserPrefs) {
+    const userRef = doc(db, 'users', uid);
+    await updateDoc(userRef, {
+      preferences,
+      updatedAt: Timestamp.now(),
+    });
+  },
+
+  // Get user preferences
+  async getUserPreferences(uid: string): Promise<UserPrefs | null> {
+    const profile = await this.getUserProfile(uid);
+    return profile?.preferences || null;
   },
 }; 

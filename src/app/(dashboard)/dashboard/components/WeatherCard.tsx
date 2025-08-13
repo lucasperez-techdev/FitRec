@@ -1,19 +1,6 @@
 "use client";
 import { useWeather } from "@/contexts/WeatherContext";
 
-interface WeatherValues {
-  temperatureApparent: number;
-}
-
-function getOutfitSuggestion(values: WeatherValues) {
-  const { temperatureApparent } = values;
-
-  if (temperatureApparent < 0) return "🧥 Heavy coat, gloves, and hat!";
-  if (temperatureApparent < 10) return "🧥 Jacket or hoodie.";
-  if (temperatureApparent < 20) return "👕 Long sleeves or light jacket.";
-  return "😎 T-shirt and shorts!";
-}
-
 export default function WeatherCard() {
   const { weather, loading, error } = useWeather();
 
@@ -37,9 +24,8 @@ export default function WeatherCard() {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-        🌤 Weather & Outfit Suggestion
+        🌤 Current Weather
       </h2>
-      
       <div className="space-y-2 text-sm">
         <p className="text-gray-600 dark:text-gray-400">
           <span className="font-medium">Temp:</span> {weather.temperature}°C
@@ -52,12 +38,6 @@ export default function WeatherCard() {
         </p>
         <p className="text-gray-500 dark:text-gray-400 text-xs">
           Last updated: {weather.lastUpdated.toLocaleTimeString()}
-        </p>
-      </div>
-
-      <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-        <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
-          {getOutfitSuggestion(weather)}
         </p>
       </div>
     </div>
